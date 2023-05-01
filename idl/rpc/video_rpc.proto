@@ -1,0 +1,122 @@
+syntax = "proto3";
+package video;
+option go_package = "video_rpc";
+
+//import "commonrpc.proto";
+
+message User {
+  int64 id = 1; // 用户id
+  string name = 2; // 用户名称
+  int64 follow_count = 3; // 关注总数
+  int64 follower_count = 4; // 粉丝总数
+  bool is_follow = 5; // true-已关注，false-未关注
+}
+
+message Video {
+  int64 id = 1; // 视频唯一标识
+  User author = 2; // 视频作者信息
+  string play_url = 3; // 视频播放地址
+  string cover_url = 4; // 视频封面地址
+  int64 favorite_count = 5; // 视频的点赞总数
+  int64 comment_count = 6; // 视频的评论总数
+  bool is_favorite = 7; // true-已点赞，false-未点赞
+  string title = 8; // 视频标题
+}
+
+message BaseResp {
+  int32 status_code = 1;
+  string status_message = 2;
+  int64 service_time = 3;
+}
+
+message QueryVideoReq {
+  int64 latest_time = 1;
+  int64 user_id = 2;
+}
+
+message QueryVideoResp {
+  BaseResp base_resp = 1;
+  repeated Video video_list = 2;
+  int64 next_time = 3;
+}
+
+message CreateVideoReq {
+  string title = 1;
+  string play_url = 2;
+  string cover_url = 3;
+  int64 user_id = 4;
+}
+
+message CreateVideoResp {
+  BaseResp base_resp = 1;
+}
+
+message QueryVideoByUserReq {
+  int64 user_id = 1;
+  int64 my_user_id = 2;
+}
+
+message QueryVideoByUserResp {
+  BaseResp base_resp = 1;
+  repeated Video video_list = 2;
+}
+
+message QueryVideoByVideoIdBatchReq {
+  repeated int64 videoID = 1;
+}
+
+message QueryVideoByVideoIdBatchResp {
+  BaseResp base_resp = 1;
+  repeated Video video_list = 2;
+}
+
+message IncreaseFavoriteCountReq {
+  int64 videoID = 1;
+}
+
+message IncreaseFavoriteCountResp {
+  BaseResp base_resp = 1;
+}
+message DecreaseFavoriteCountReq {
+  int64 videoID = 1;
+}
+
+message DecreaseFavoriteCountResp {
+  BaseResp base_resp = 1;
+}
+message IncreaseCommentCountReq {
+  int64 videoID = 1;
+}
+
+message IncreaseCommentCountResp {
+  BaseResp base_resp = 1;
+}
+message DecreaseCommentCountReq {
+  int64 videoID = 1;
+}
+
+message DecreaseCommentCountResp {
+  BaseResp base_resp = 1;
+}
+
+message GetAuthorReq {
+  int64 videoID = 1;
+  int64 myUserID = 2;
+}
+
+message GetAuthorResp {
+  BaseResp base_resp = 1;
+  User Author = 2;
+}
+
+service VideoService {
+  rpc QueryVideo(QueryVideoReq) returns(QueryVideoResp);
+  rpc CreateVideo(CreateVideoReq) returns(CreateVideoResp);
+  rpc QueryVideoByUser(QueryVideoByUserReq) returns(QueryVideoByUserResp);
+  rpc QueryVideoByIdBatch(QueryVideoByVideoIdBatchReq) returns(QueryVideoByVideoIdBatchResp);
+  rpc IncreaseFavoriteCount(IncreaseFavoriteCountReq) returns(IncreaseFavoriteCountResp);
+  rpc DecreaseFavoriteCount(DecreaseFavoriteCountReq) returns(DecreaseFavoriteCountResp);
+  rpc IncreaseCommentCount(IncreaseCommentCountReq) returns(IncreaseCommentCountResp);
+  rpc DecreaseCommentCount(DecreaseCommentCountReq) returns(DecreaseCommentCountResp);
+  rpc GetAuthor(GetAuthorReq) returns(GetAuthorResp);
+}

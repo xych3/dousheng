@@ -1,0 +1,28 @@
+mysql:
+  host: 120.76.247.12
+  port: 3306
+  database: douyin
+  username: root
+  password: byte-dance-go
+
+#redis:
+
+address:
+  etcd: 127.0.0.1:2379
+  api: 127.0.0.1:8080
+  user: 127.0.0.1:8081
+  comment: 127.0.0.1:8082
+  video: 127.0.0.1:8083
+  favorite: 127.0.0.1:8084
+
+
+service:
+  user: user
+  video: video
+  comment: comment
+  favorite: favorite
+
+
+redis:
+  addr: 120.76.247.12:6379
+  password: byte-dance-go

@@ -1,0 +1,38 @@
+mysql:
+  host: 120.76.247.12
+  port: 3306
+  database: douyin
+  username: root
+  password: byte-dance-go
+
+address:
+  etcd: 127.0.0.1:2379
+  api: 127.0.0.1:8080
+  user: 127.0.0.1:9001
+  comment: 127.0.0.1:9002
+  video: 127.0.0.1:9003
+  favorite: 127.0.0.1:9004
+
+
+service:
+  user: user
+  video: video
+  comment: comment
+  favorite: favorite
+
+redis:
+  addr: 127.0.0.1:6379
+  password:
+
+oss:
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+  access_key_id: LTAI5t8ByvagYGDZE5X7irjc
+  access_key_secret: fIwcdIPMeBNxnBwI3nQyBgZpnYafug
+  bucket_name: derrick-douyin
+  prefix_path: douyin/
+
+resource:
+  tmp_dir: /Users/luozhongtian/go/src/douyin/res/
+
+
+

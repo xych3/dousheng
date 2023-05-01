@@ -1,0 +1,76 @@
+syntax = "proto2";
+package chat;
+option go_package = "chat";
+
+import "api.proto";
+
+message FriendUser {
+  required int64 id = 1; // 用户id
+  required string name = 2; // 用户名称
+  optional int64 follow_count = 3; // 关注总数
+  optional int64 follower_count = 4; // 粉丝总数
+  required bool is_follow = 5; // true-已关注，false-未关注
+  required string avatar = 6; // 用户头像Url
+  optional string message = 7; // 和该好友的最新聊天消息
+  required int64 msgType = 8; // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
+}
+
+message Message {
+  required int64 id = 1; // 消息id
+  required int64 to_user_id = 2; // 该消息接收者的id
+  required int64 from_user_id =3; // 该消息发送者的id
+  required string content = 4; // 消息内容
+  optional int64 create_time = 5; // 消息创建时间
+}
+
+message RelationFriendListReq {
+  required int64 user_id = 1; // 用户id
+  required string token = 2; // 用户鉴权token
+}
+
+message RelationFriendListResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated FriendUser user_list = 3; // 用户列表
+}
+
+message MessageChatReq {
+  required string token = 1; // 用户鉴权token
+  required int64 to_user_id = 2; // 对方用户id
+  required int64 pre_msg_time = 3; //上次最新消息的时间（新增字段-apk更新中）
+}
+  
+message MessageChatResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated Message message_list = 3; // 消息列表
+}
+
+message RelationActionReq {
+  required string token = 1; // 用户鉴权token
+  required int64 to_user_id = 2; // 对方用户id
+  required int32 action_type = 3; // 1-发送消息
+  required string content = 4; // 消息内容
+}
+  
+message RelationActionResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+}
+
+service MessageHandler {
+  // 登陆用户消息页面获取朋友列表
+  rpc FriendList(RelationFriendListReq) returns(RelationFriendListResp) {
+    option (api.get) = "/douyin/relation/friend/list/";
+  }
+
+  // 登陆用户消息页面获取聊天记录
+  rpc MessageChat(MessageChatReq) returns(MessageChatResp) {
+    option (api.get) = "/douyin/message/chat/";
+  }
+
+  // 登陆用户消息页面发送消息
+  rpc Action(RelationActionReq) returns(RelationActionResp) {
+    option (api.post) = "/douyin/message/action/";
+  }
+}

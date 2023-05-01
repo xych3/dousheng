@@ -1,0 +1,49 @@
+syntax = "proto3";
+package user;
+option go_package = "user_rpc";
+
+
+message BaseResp {
+  int32 status_code = 1;
+  string status_message = 2;
+  int64 service_time = 3;
+}
+
+message RPCCreateUserReq {
+  string username = 1;
+  string password = 2;
+}
+
+message RPCCreateUserResp {
+  BaseResp base_resp = 1;
+}
+
+message RPCCheckUserReq {
+  string username = 1;
+  string password = 2;
+}
+
+message RPCCheckUserResp {
+  BaseResp base_resp = 1;
+  int64 user_id = 2;
+}
+
+message RPCQueryUserReq {
+  int64 target_user_id = 1;
+  int64 my_user_id = 2;
+}
+
+message RPCQueryUserResp {
+  BaseResp base_resp = 1;
+  int64 id = 2; // 用户id
+  string name = 3; // 用户名称
+  int64 follow_count = 4; // 关注总数
+  int64 follower_count = 5; // 粉丝总数
+  bool isFollow = 6;
+}
+
+service UserService {
+  rpc CreateUser(RPCCreateUserReq) returns(RPCCreateUserResp);
+  rpc CheckUser(RPCCheckUserReq) returns(RPCCheckUserResp);
+  rpc QueryUser(RPCQueryUserReq) returns(RPCQueryUserResp);
+}

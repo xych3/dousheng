@@ -1,0 +1,48 @@
+syntax = "proto2";
+package favorite;
+option go_package = "favorite";
+
+import "common.proto";
+import "api.proto";
+
+enum FavoriteActionType {
+  _ = 0;
+  FAVORITE = 1;
+  CANCEL = 2;
+}
+
+message FavoriteActionReq {
+  required string token = 1; // 用户鉴权token
+  required int64 video_id = 2; // 视频id
+  required FavoriteActionType action_type = 3; // 1-点赞，2-取消点赞
+}
+
+message FavoriteActionResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+}
+
+message FavoriteListReq {
+  required int64 user_id = 1; // 用户id
+  required string token = 2; // 用户鉴权token
+}
+
+message FavoriteListResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated common.Video video_list = 3; // 用户点赞视频列表
+}
+
+service FavoriteHandler {
+  // 登录用户对视频的点赞和取消点赞操作
+  rpc Action(FavoriteActionReq) returns(FavoriteActionResp) {
+    option (api.post) = "/douyin/favorite/action/";
+  }
+
+  // 用户的所有点赞视频
+  rpc List(FavoriteListReq) returns(FavoriteListResp) {
+    option (api.get) = "/douyin/favorite/list/";
+  }
+
+
+}

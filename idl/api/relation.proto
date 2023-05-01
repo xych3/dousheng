@@ -1,0 +1,79 @@
+syntax = "proto2";
+package relation;
+option go_package = "relation";
+
+import "common.proto";
+import "api.proto";
+
+enum RelationActionType {
+  _ = 0;
+  FOLLOW = 1;
+  CANCEL = 2;
+}
+
+message RelationActionReq {
+  required string token = 1; // 用户鉴权token
+  required int64 to_user_id = 2; // 对方用户id
+  required RelationActionType action_type = 3; // 1-关注，2-取消关注
+}
+
+message RelationActionResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+}
+
+message RelationFollowListReq {
+  required int64 user_id = 1; // 用户id
+  required string token = 2; // 用户鉴权token
+}
+
+message RelationFollowListResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated common.User user_list = 3; // 用户信息列表
+}
+
+message RelationFollowerListReq {
+  required int64 user_id = 1; // 用户id
+  required string token = 2; // 用户鉴权token
+}
+
+message RelationFollowerListResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated common.User user_list = 3; // 用户信息列表
+}
+
+message RelationFriendListReq {
+  required int64 user_id = 1; // 用户id
+  required string token = 2; // 用户鉴权token
+}
+
+message RelationFriendListResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated common.User user_list = 3; // 用户信息列表
+}
+
+service RelationHandler {
+  // 登陆用户对其他用户进行关注或取消关注
+  rpc Action(RelationActionReq) returns(RelationActionResp) {
+    option (api.post) = "/douyin/relation/action/";
+  }
+
+  // 登陆用户关注的所有用户列表
+  rpc FollowList(RelationFollowListReq) returns(RelationFollowListResp) {
+    option (api.get) = "/douyin/relation/follow/list/";
+  }
+
+  // 所有关注登陆用户的粉丝列表
+  rpc FollowerList(RelationFollowerListReq) returns(RelationFollowerListResp) {
+    option (api.get) = "/douyin/relation/follower/list/";
+  }
+
+  // 所有关注登陆用户的好友列表
+  rpc FriendList(RelationFriendListReq) returns(RelationFriendListResp) {
+    option (api.get) = "/douyin/relation/friend/list/";
+  }
+
+}

@@ -1,0 +1,58 @@
+syntax = "proto2";
+package video;
+option go_package = "video";
+
+import "common.proto";
+import "api.proto";
+
+message FeedReq {
+  optional int64 latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
+  optional string token = 2; // 用户登录状态下设置
+}
+
+message FeedResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated common.Video video_list = 3; // 视频列表
+  optional int64 next_time = 4; // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+}
+
+message PublishActionReq {
+  required string token = 1; // 用户鉴权token
+  required string data_path = 2; // 视频数据
+  required string title = 3; // 视频标题
+}
+
+message PublishActionResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+}
+
+message PublishListReq {
+  required int64 user_id = 1; // 用户鉴权token
+  required string token = 2; // 用户id
+}
+
+message PublishListResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated common.Video video_list = 3; // 用户发布的视频列表
+}
+
+service VideoHandler {
+  // 不限制登录状态，返回按投稿时间倒序的视频列表，视频数由服务端控制，单次最多30个
+  rpc Feed(FeedReq) returns(FeedResp) {
+    option (api.get) = "/douyin/feed";
+  }
+
+  // 登录用户选择视频上传
+  rpc PublishAction(PublishActionReq) returns(PublishActionResp) {
+    option (api.post) = "/douyin/publish/action/";
+  }
+
+  // 用户的视频发布列表，直接列出用户所有投稿过的视频
+  rpc PublishList(PublishListReq) returns(PublishListResp) {
+    option (api.post) = "/douyin/publish/list/";
+  }
+}
+

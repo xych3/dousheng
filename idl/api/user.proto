@@ -1,0 +1,59 @@
+syntax = "proto2";
+package user;
+option go_package = "user";
+
+import "api.proto";
+import "common.proto";
+
+message UserRegisterReq {
+  required string username = 1; // 注册用户名，最长32个字符
+  required string password = 2; // 密码，最长32个字符
+}
+
+message UserRegisterResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  required int64 user_id = 3; // 用户id
+  required string token = 4; // 用户鉴权token
+}
+
+message UserLoginReq {
+  required string username = 1; // 登录用户名
+  required string password = 2; // 登录密码
+}
+
+message UserLoginResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  required int64 user_id = 3; // 用户id
+  required string token = 4; // 用户鉴权token
+}
+
+message UserReq {
+  required int64 user_id = 1; // 用户id
+  required string token = 2; // 用户鉴权token
+}
+
+message UserResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  required common.User user = 3; // 用户信息
+}
+
+service UserHandler {
+  // 新用户注册时提供用户名，密码，昵称即可，用户名需要保证唯一。创建成功后返回用户 id 和权限token
+  rpc Register(UserRegisterReq) returns(UserRegisterResp) {
+    option (api.post) = "/douyin/user/register";
+  }
+
+  // 获取用户的 id、昵称，如果实现社交部分的功能，还会返回关注数和粉丝数
+  rpc User(UserReq) returns(UserResp) {
+    option (api.get) = "/douyin/user/";
+  }
+
+
+}
+
+
+
+

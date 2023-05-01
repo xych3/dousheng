@@ -1,0 +1,63 @@
+syntax = "proto3";
+package relation;
+option go_package = "relation_rpc";
+
+message User{
+  int64 id = 1;
+  string name = 2;
+  int64 follow_count = 3;
+  int64 follower_count = 4;
+  bool is_follow = 5;
+}
+message BaseResp {
+  int32 status_code = 1;
+  string status_message = 2;
+  int64 service_time = 3;
+}
+
+message RPCRelationActionReq{
+  int64 to_user_id = 1;
+  int64 follower_id = 2;
+  int32 action_type = 3;
+}
+
+message RPCRelationActionResp{
+  BaseResp base_resp = 1;
+}
+
+message RPCRelationFollowListReq {
+  int64 user_id = 1;
+  int64 follower_id = 2;
+}
+
+message RPCRelationFollowListResp {
+  BaseResp base_resp = 1;
+  repeated User follow_list = 2;
+}
+
+message RPCRelationFollowerListReq {
+  int64 user_id = 1;
+  int64 to_user_id = 2;
+}
+
+message RPCRelationFollowerListResp {
+  BaseResp base_resp = 1;
+  repeated User follower_list = 2;
+}
+
+message RPCCheckFollowReq {
+  int64 follower_id = 1;    //关注者id
+  int64 to_user_id = 2;
+}
+
+message RPCCheckFollowResp {
+  BaseResp base_resp = 1;
+  bool IsFollow = 2;
+}
+
+service RelationService {
+  rpc Action(RPCRelationActionReq) returns(RPCRelationActionResp) ;
+  rpc FollowList(RPCRelationFollowListReq) returns(RPCRelationFollowListResp) ;
+  rpc FollowerList(RPCRelationFollowerListReq) returns(RPCRelationFollowerListResp) ;
+  rpc CheckFollow(RPCCheckFollowReq) returns(RPCCheckFollowResp);
+}

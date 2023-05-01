@@ -1,0 +1,54 @@
+syntax = "proto3";
+package favorite;
+option go_package = "favorite_rpc";
+
+
+message BaseResp {
+  int32 status_code = 1;
+  string status_message = 2;
+  int64 service_time = 3;
+}
+
+message RPCFavoriteCreateReq {
+  int64 video_id = 1;
+  int64 user_id = 2;
+}
+
+message RPCFavoriteCreateResp {
+  BaseResp base_resp = 1;
+}
+
+message RPCFavoriteDelReq {
+  int64 video_id = 1;
+  int64 user_id = 2;
+}
+
+message RPCFavoriteDelResp {
+  BaseResp base_resp = 1;
+}
+
+message RPCFavoriteListReq {
+  int64 user_id = 1;
+}
+
+message RPCFavoriteListResp {
+  BaseResp base_resp = 1;
+  repeated int64 video_id_list = 2;
+}
+
+message RPCFilterFavoriteReq {
+  int64 user_id = 1;
+  repeated int64 video_id_list = 2;
+}
+
+message RPCFilterFavoriteResp {
+  BaseResp base_resp = 1;
+  repeated int64 video_id_list = 2;
+}
+
+service FavoriteService {
+  rpc CreateFavorite(RPCFavoriteCreateReq) returns(RPCFavoriteCreateResp);
+  rpc DelFavorite(RPCFavoriteDelReq) returns(RPCFavoriteDelResp);
+  rpc FavoriteList(RPCFavoriteListReq) returns(RPCFavoriteListResp);
+  rpc FilterFavorite(RPCFilterFavoriteReq) returns(RPCFilterFavoriteResp);
+}

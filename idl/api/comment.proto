@@ -1,0 +1,50 @@
+syntax = "proto2";
+package comment;
+option go_package = "comment";
+
+import "common.proto";
+import "api.proto";
+
+enum CommentActionType {
+  _ = 0;
+  PUBLISH = 1;
+  DELETE = 2;
+}
+
+message CommentActionReq {
+  required string token = 1; // 用户鉴权token
+  required int64 video_id = 2; // 视频id
+  required CommentActionType action_type = 3; // 1-发布评论，2-删除评论
+  optional string comment_text = 4; // 用户填写的评论内容，在action_type=1的时候使用
+  optional int64 comment_id = 5; // 要删除的评论id，在action_type=2的时候使用
+}
+
+message CommentActionResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  optional common.Comment comment = 3; // 评论成功返回评论内容，不需要重新拉取整个列表
+}
+
+message CommentListReq {
+  required string token = 1; // 用户鉴权token
+  required int64 video_id = 2; // 视频id
+}
+
+message CommentListResp {
+  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  optional string status_msg = 2; // 返回状态描述
+  repeated common.Comment comment_list = 3; // 评论列表
+}
+
+service CommentHandler {
+  // 登录用户对视频进行评论
+  rpc Action(CommentActionReq) returns(CommentActionResp) {
+    option (api.post) = "/douyin/comment/action/";
+  }
+
+  // 查看视频的所有评论，按发布时间倒序
+  rpc List(CommentListReq) returns(CommentListResp) {
+    option (api.get) = "/douyin/comment/list/";
+  }
+}
+
